@@ -23,6 +23,7 @@ import {
   skillCategories,
   techLogos,
 } from "@/lib/portfolio-data";
+import { loadVideoSource, playWhenReady } from "@/lib/video-utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -109,7 +110,6 @@ export function PortfolioShell() {
   const videoA = useRef<HTMLVideoElement | null>(null);
   const videoB = useRef<HTMLVideoElement | null>(null);
   const activeVideo = useRef<"a" | "b">("a");
-  const crossfadeRafRef = useRef<number | null>(null);
 
   const scrollToSection = (hash: string) => {
     if (typeof window === "undefined") {
@@ -201,67 +201,117 @@ export function PortfolioShell() {
     };
   }, []);
 
-  // Seamless crossfade loop between two video elements
+  // Hero: load one video first, defer the second, crossfade on timeupdate
   useEffect(() => {
     const vA = videoA.current;
     const vB = videoB.current;
     if (!vA || !vB) return;
 
-    // Start video A, hide video B
     vA.style.opacity = "1";
     vB.style.opacity = "0";
     activeVideo.current = "a";
 
-    vA.currentTime = 0;
-    void vA.play().catch(() => {});
-
     let isCrossfading = false;
+    let secondaryRequested = false;
+    let cancelled = false;
+    const cleanups: Array<() => void> = [];
 
-    const tick = () => {
-      crossfadeRafRef.current = requestAnimationFrame(tick);
+    const requestSecondaryVideo = () => {
+      if (secondaryRequested || cancelled) {
+        return;
+      }
+      secondaryRequested = true;
+      void loadVideoSource(vB, VIDEO_SRC);
+    };
+
+    const runCrossfade = (current: HTMLVideoElement, next: HTMLVideoElement) => {
+      const fade = () => {
+        if (cancelled || !videoA.current || !videoB.current) {
+          return;
+        }
+
+        const remaining = current.duration - current.currentTime;
+        const ratio = Math.max(0, remaining / CROSSFADE_DURATION);
+        current.style.opacity = String(ratio);
+        next.style.opacity = String(1 - ratio);
+
+        if (ratio > 0) {
+          requestAnimationFrame(fade);
+        } else {
+          activeVideo.current = activeVideo.current === "a" ? "b" : "a";
+          current.pause();
+          current.currentTime = 0;
+          isCrossfading = false;
+        }
+      };
+
+      requestAnimationFrame(fade);
+    };
+
+    const handleTimeUpdate = () => {
+      if (isCrossfading || cancelled) {
+        return;
+      }
+
       const current = activeVideo.current === "a" ? vA : vB;
       const next = activeVideo.current === "a" ? vB : vA;
 
-      if (!current.duration || current.duration === Infinity) return;
+      if (!current.duration || current.duration === Infinity) {
+        return;
+      }
 
       const remaining = current.duration - current.currentTime;
+      if (remaining > CROSSFADE_DURATION + 8) {
+        return;
+      }
 
-      if (remaining <= CROSSFADE_DURATION && !isCrossfading) {
-        isCrossfading = true;
-        // Prepare next video from start
+      if (!secondaryRequested) {
+        requestSecondaryVideo();
+      }
+
+      if (remaining > CROSSFADE_DURATION) {
+        return;
+      }
+
+      isCrossfading = true;
+
+      const startCrossfade = () => {
         next.currentTime = 0;
-        void next.play().catch(() => {});
+        cleanups.push(playWhenReady(next));
+        runCrossfade(current, next);
+      };
 
-        // Animate crossfade using CSS transitions (already set inline)
-        const progress = remaining / CROSSFADE_DURATION; // 1 → 0
-        const fade = () => {
-          if (!videoA.current || !videoB.current) return;
-          const r = Math.max(0, (current.duration - current.currentTime) / CROSSFADE_DURATION);
-          current.style.opacity = String(r);
-          next.style.opacity = String(1 - r);
-
-          if (r > 0) {
-            requestAnimationFrame(fade);
-          } else {
-            // Swap active, reset old video
-            activeVideo.current = activeVideo.current === "a" ? "b" : "a";
-            current.pause();
-            current.currentTime = 0;
-            isCrossfading = false;
-          }
-        };
-        // Suppress unused-variable warning from eslint
-        void progress;
-        requestAnimationFrame(fade);
+      if (next.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+        startCrossfade();
+      } else {
+        next.addEventListener("canplay", startCrossfade, { once: true });
       }
     };
 
-    crossfadeRafRef.current = requestAnimationFrame(tick);
+    const startPrimary = () => {
+      if (cancelled) {
+        return;
+      }
+
+      vA.currentTime = 0;
+      cleanups.push(playWhenReady(vA));
+      vA.addEventListener("timeupdate", handleTimeUpdate);
+      vB.addEventListener("timeupdate", handleTimeUpdate);
+      window.setTimeout(requestSecondaryVideo, 1200);
+    };
+
+    if (vA.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      startPrimary();
+    } else {
+      vA.addEventListener("canplay", startPrimary, { once: true });
+    }
 
     return () => {
-      if (crossfadeRafRef.current !== null) {
-        cancelAnimationFrame(crossfadeRafRef.current);
-      }
+      cancelled = true;
+      cleanups.forEach((cleanup) => cleanup());
+      vA.removeEventListener("canplay", startPrimary);
+      vA.removeEventListener("timeupdate", handleTimeUpdate);
+      vB.removeEventListener("timeupdate", handleTimeUpdate);
       vA.pause();
       vB.pause();
     };
@@ -451,10 +501,9 @@ export function PortfolioShell() {
         />
         <video
           ref={videoB}
-          src={VIDEO_SRC}
           muted
           playsInline
-          preload="auto"
+          preload="none"
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ opacity: 0 }}
