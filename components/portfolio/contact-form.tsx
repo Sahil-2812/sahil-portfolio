@@ -29,47 +29,47 @@ export function ContactForm() {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-      <form onSubmit={onSubmit} className="glass-panel space-y-5 rounded-[28px] p-6">
-        <div className="grid gap-5 sm:grid-cols-2">
-          <label className="space-y-2 text-sm font-medium">
+    <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:gap-6">
+      <form onSubmit={onSubmit} className="glass-panel space-y-4 p-5 sm:p-6">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="space-y-2 text-sm font-medium text-white/90">
             Name
             <input
               required
               value={form.name}
               onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-              className="w-full rounded-2xl border border-[var(--border)] bg-transparent px-4 py-3 outline-none focus:border-[var(--primary)]"
+              className="w-full rounded-2xl border border-white/12 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-white/30"
               placeholder="Your name"
             />
           </label>
-          <label className="space-y-2 text-sm font-medium">
+          <label className="space-y-2 text-sm font-medium text-white/90">
             Email
             <input
               required
               type="email"
               value={form.email}
               onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
-              className="w-full rounded-2xl border border-[var(--border)] bg-transparent px-4 py-3 outline-none focus:border-[var(--primary)]"
+              className="w-full rounded-2xl border border-white/12 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-white/30"
               placeholder="you@example.com"
             />
           </label>
         </div>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-2 text-sm font-medium text-white/90">
           Message
           <textarea
             required
-            rows={6}
+            rows={5}
             value={form.message}
             onChange={(event) => setForm((current) => ({ ...current, message: event.target.value }))}
-            className="w-full rounded-[24px] border border-[var(--border)] bg-transparent px-4 py-3 outline-none focus:border-[var(--primary)]"
+            className="w-full rounded-[24px] border border-white/12 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-white/40 focus:border-white/30"
             placeholder="Tell me about your project or idea."
           />
         </label>
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <p className="text-sm text-[var(--muted)]">{status}</p>
+          <p className="text-sm text-white/60">{status}</p>
           <button
             type="submit"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] px-5 py-3 text-sm font-semibold text-[var(--background)]"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black"
           >
             <Send className="h-4 w-4" />
             Send Message
@@ -77,12 +77,12 @@ export function ContactForm() {
         </div>
       </form>
 
-      <aside className="space-y-5">
-        <div className="card-panel rounded-[28px] p-6">
-          <h3 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
+      <aside className="space-y-4">
+        <div className="glass-panel p-5 sm:p-6">
+          <h3 className="font-[family-name:var(--font-display)] text-xl font-semibold text-white">
             Contact Details
           </h3>
-          <div className="mt-5 space-y-4 text-sm text-[var(--muted)]">
+          <div className="mt-4 space-y-3 text-sm text-white/70">
             <p className="flex items-center gap-3">
               <Mail className="h-4 w-4 text-[var(--primary)]" />
               maliksahil10996@gmail.com
@@ -94,18 +94,18 @@ export function ContactForm() {
           </div>
         </div>
 
-        <div className="card-panel rounded-[28px] p-6">
-          <h3 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
+        <div className="glass-panel p-5 sm:p-6">
+          <h3 className="font-[family-name:var(--font-display)] text-xl font-semibold text-white">
             Social Links
           </h3>
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="mt-4 flex flex-wrap gap-2">
             {socialLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 target={link.href.startsWith("mailto:") ? undefined : "_blank"}
                 rel={link.href.startsWith("mailto:") ? undefined : "noreferrer"}
-                className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold hover:border-[var(--primary)] hover:text-[var(--primary)]"
+                className="rounded-full border border-white/12 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-white/75 hover:border-white/25 hover:text-white sm:text-sm"
               >
                 {link.label}
               </a>

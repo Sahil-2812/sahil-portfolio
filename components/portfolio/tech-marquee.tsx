@@ -11,19 +11,20 @@ type TechMarqueeProps = {
 
 function LogoTile({ item }: { item: TechLogo }) {
   return (
-    <div className="group flex min-w-[150px] items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] px-5 py-4 grayscale transition hover:scale-[1.03] hover:grayscale-0">
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden
-        className="h-7 w-7"
-        style={{
-          fill: `#${item.icon.hex}`,
-          filter: "drop-shadow(0 0 12px rgba(255, 148, 84, 0.22))",
-        }}
-      >
-        <path d={item.icon.path} />
-      </svg>
-      <span className="text-sm font-semibold tracking-wide">{item.label}</span>
+    <div className="group flex shrink-0 items-center gap-3 rounded-2xl border border-white/14 bg-white/10 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md transition duration-300 hover:scale-[1.04] hover:border-white/25 hover:bg-white/14 sm:px-5 sm:py-3.5">
+      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/95 p-1.5 shadow-sm">
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden
+          className="h-full w-full"
+          style={{ fill: `#${item.icon.hex}` }}
+        >
+          <path d={item.icon.path} />
+        </svg>
+      </span>
+      <span className="whitespace-nowrap text-sm font-semibold tracking-wide text-white/90">
+        {item.label}
+      </span>
     </div>
   );
 }
@@ -42,13 +43,14 @@ function MarqueeRow({ items, reverse = false }: { items: TechLogo[]; reverse?: b
     }
 
     const distance = track.scrollWidth / 2;
+    timelineRef.current?.kill();
     timelineRef.current = gsap.fromTo(
       track,
       { x: reverse ? -distance : 0 },
       {
         x: reverse ? 0 : -distance,
         ease: "none",
-        duration: 26,
+        duration: 28,
         repeat: -1,
       },
     );
@@ -64,11 +66,11 @@ function MarqueeRow({ items, reverse = false }: { items: TechLogo[]; reverse?: b
       container.removeEventListener("mouseleave", play);
       timelineRef.current?.kill();
     };
-  }, [reverse]);
+  }, [items, reverse]);
 
   return (
-    <div ref={containerRef} className="mask-fade-x overflow-hidden">
-      <div ref={trackRef} className="flex w-max gap-5 py-3">
+    <div ref={containerRef} className="mask-fade-x w-full overflow-hidden py-1">
+      <div ref={trackRef} className="flex w-max items-center gap-4 will-change-transform">
         {items.concat(items).map((item, index) => (
           <LogoTile key={`${item.label}-${index}`} item={item} />
         ))}
@@ -81,7 +83,7 @@ export function TechMarquee({ items }: TechMarqueeProps) {
   const midpoint = useMemo(() => Math.ceil(items.length / 2), [items.length]);
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-3 sm:gap-4">
       <MarqueeRow items={items.slice(0, midpoint)} />
       <MarqueeRow items={items.slice(midpoint)} reverse />
     </div>

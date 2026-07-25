@@ -50,34 +50,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f3efe7" },
-    { media: "(prefers-color-scheme: dark)", color: "#050816" },
-  ],
-  colorScheme: "dark light",
+  themeColor: "#050816",
+  colorScheme: "dark",
 };
-
-const themeScript = `
-(() => {
-  const storedTheme = localStorage.getItem("theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const theme = storedTheme ?? (prefersDark ? "dark" : "light");
-  document.documentElement.dataset.theme = theme;
-})();
-`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      data-scroll-behavior="smooth"
-      suppressHydrationWarning
-      className="h-full antialiased"
-    >
-      <body className="min-h-full">
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        {children}
-      </body>
+    <html lang="en" data-scroll-behavior="smooth" className="h-full antialiased">
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

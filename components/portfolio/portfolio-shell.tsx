@@ -1,19 +1,21 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, Download, Mail, Menu, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, ChevronDown, Download, LayoutTemplate, Lightbulb, Mail, Smartphone, X } from "lucide-react";
 import { MouseEvent, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type { SimpleIcon } from "simple-icons";
+import { siGithub, siWhatsapp } from "simple-icons";
 
 import { ContactForm } from "@/components/portfolio/contact-form";
 import { ProjectGrid } from "@/components/portfolio/project-grid";
+import { Reveal } from "@/components/portfolio/reveal";
 import { ScrollProgress } from "@/components/portfolio/scroll-progress";
 import { SectionHeading } from "@/components/portfolio/section-heading";
 import { TechMarquee } from "@/components/portfolio/tech-marquee";
-import { ThemeToggle } from "@/components/portfolio/theme-toggle";
+import { VideoBackdrop } from "@/components/portfolio/video-backdrop";
 import {
   heroStats,
   highlights,
@@ -24,6 +26,24 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
+const highlightCards = [
+  {
+    title: "Frontend development",
+    description: highlights[0],
+    icon: LayoutTemplate,
+  },
+  {
+    title: "Web and mobile projects",
+    description: highlights[1],
+    icon: Smartphone,
+  },
+  {
+    title: "Problem solving mindset",
+    description: highlights[2],
+    icon: Lightbulb,
+  },
+] as const;
+
 const navItems = [
   { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
@@ -32,11 +52,64 @@ const navItems = [
   { label: "Contact", href: "#contact" },
 ];
 
+const VIDEO_SRC = "/video/sahil-hero.mp4";
+// How many seconds before the end to start the crossfade
+const CROSSFADE_DURATION = 1.5;
+
+const heroSocialActions = [
+  {
+    label: "GitHub",
+    href: "https://github.com/example",
+    icon: siGithub,
+    kind: "simple",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://linkedin.com/in/example",
+    icon: null,
+    kind: "linkedin",
+  },
+  {
+    label: "Email",
+    href: "mailto:maliksahil10996@gmail.com",
+    icon: null,
+    kind: "mail",
+  },
+  {
+    label: "WhatsApp",
+    href: "#contact",
+    icon: siWhatsapp,
+    kind: "simple",
+  },
+] as const;
+
+function BrandIcon({ icon }: { icon: SimpleIcon }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6 fill-current">
+      <path d={icon.path} />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-6 w-6 fill-current">
+      <path d="M4.98 3.5C4.98 4.88 3.93 6 2.5 6S0 4.88 0 3.5 1.05 1 2.5 1 4.98 2.12 4.98 3.5zM0 8h5v16H0V8zm7.5 0h4.8v2.18h.07c.67-1.26 2.31-2.58 4.76-2.58 5.09 0 6.03 3.35 6.03 7.7V24h-5v-7.44c0-1.77-.03-4.05-2.47-4.05-2.48 0-2.86 1.94-2.86 3.93V24h-5V8z" />
+    </svg>
+  );
+}
+
 export function PortfolioShell() {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const shellRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
+
+  // Two video elements for seamless crossfade loop
+  const videoA = useRef<HTMLVideoElement | null>(null);
+  const videoB = useRef<HTMLVideoElement | null>(null);
+  const activeVideo = useRef<"a" | "b">("a");
+  const crossfadeRafRef = useRef<number | null>(null);
 
   const scrollToSection = (hash: string) => {
     if (typeof window === "undefined") {
@@ -66,6 +139,13 @@ export function PortfolioShell() {
     setMenuOpen(false);
     scrollToSection(hash);
   };
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setLoading(false), 700);
@@ -121,6 +201,72 @@ export function PortfolioShell() {
     };
   }, []);
 
+  // Seamless crossfade loop between two video elements
+  useEffect(() => {
+    const vA = videoA.current;
+    const vB = videoB.current;
+    if (!vA || !vB) return;
+
+    // Start video A, hide video B
+    vA.style.opacity = "1";
+    vB.style.opacity = "0";
+    activeVideo.current = "a";
+
+    vA.currentTime = 0;
+    void vA.play().catch(() => {});
+
+    let isCrossfading = false;
+
+    const tick = () => {
+      crossfadeRafRef.current = requestAnimationFrame(tick);
+      const current = activeVideo.current === "a" ? vA : vB;
+      const next = activeVideo.current === "a" ? vB : vA;
+
+      if (!current.duration || current.duration === Infinity) return;
+
+      const remaining = current.duration - current.currentTime;
+
+      if (remaining <= CROSSFADE_DURATION && !isCrossfading) {
+        isCrossfading = true;
+        // Prepare next video from start
+        next.currentTime = 0;
+        void next.play().catch(() => {});
+
+        // Animate crossfade using CSS transitions (already set inline)
+        const progress = remaining / CROSSFADE_DURATION; // 1 → 0
+        const fade = () => {
+          if (!videoA.current || !videoB.current) return;
+          const r = Math.max(0, (current.duration - current.currentTime) / CROSSFADE_DURATION);
+          current.style.opacity = String(r);
+          next.style.opacity = String(1 - r);
+
+          if (r > 0) {
+            requestAnimationFrame(fade);
+          } else {
+            // Swap active, reset old video
+            activeVideo.current = activeVideo.current === "a" ? "b" : "a";
+            current.pause();
+            current.currentTime = 0;
+            isCrossfading = false;
+          }
+        };
+        // Suppress unused-variable warning from eslint
+        void progress;
+        requestAnimationFrame(fade);
+      }
+    };
+
+    crossfadeRafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (crossfadeRafRef.current !== null) {
+        cancelAnimationFrame(crossfadeRafRef.current);
+      }
+      vA.pause();
+      vB.pause();
+    };
+  }, []);
+
   return (
     <div ref={shellRef} className="relative overflow-x-clip">
       <ScrollProgress />
@@ -138,183 +284,311 @@ export function PortfolioShell() {
         </div>
       </motion.div>
 
-      <header
-        ref={headerRef}
-        className="sticky top-4 z-40 mx-auto w-[min(1180px,calc(100%-1.5rem))] pt-4"
-      >
-        <div className="glass-panel flex items-center justify-between rounded-full px-4 py-3 sm:px-6">
-          <Link href="/" className="font-[family-name:var(--font-display)] text-lg font-bold tracking-tight">
-            Muhammad Sahil
-          </Link>
-
-          <nav className="hidden items-center gap-6 text-sm font-medium lg:flex">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(event) => handleAnchorClick(event, item.href)}
-                className="text-[var(--muted)] hover:text-[var(--foreground)]"
+      {/* ── Split glass navbar: left · center · right (fixed, always visible) ── */}
+      <header ref={headerRef} className="fixed top-3 z-50 w-full px-3 sm:top-4 sm:px-6">
+        <div className="relative mx-auto max-w-[1180px]">
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
+            <div className="glass-pill flex w-fit max-w-[calc(100%-7.25rem)] items-center gap-2 px-2.5 py-2 sm:max-w-none sm:gap-2.5 sm:px-3 sm:py-2.5 lg:px-5">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((current) => !current)}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white lg:hidden"
+                aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={menuOpen}
               >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+                <span className="relative flex h-3.5 w-5 flex-col justify-between">
+                  <span
+                    className={`block h-0.5 w-full origin-center rounded-full bg-white transition-transform duration-300 ${
+                      menuOpen ? "translate-y-[6px] rotate-45" : ""
+                    }`}
+                  />
+                  <span
+                    className={`block h-0.5 w-full origin-center rounded-full bg-white transition-transform duration-300 ${
+                      menuOpen ? "-translate-y-[6px] -rotate-45" : ""
+                    }`}
+                  />
+                </span>
+              </button>
 
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <a
-              href="/sahil-cv.pdf"
-              download
-              className="hidden items-center gap-2 rounded-full bg-[var(--foreground)] px-4 py-2 text-sm font-semibold text-[var(--background)] sm:inline-flex"
-            >
-              <Download className="h-4 w-4" />
-              Download CV
-            </a>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((current) => !current)}
-              className="glass-panel inline-flex h-11 w-11 items-center justify-center rounded-full lg:hidden"
-              aria-label="Toggle navigation menu"
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-
-        {menuOpen ? (
-          <div className="glass-panel mt-3 flex flex-col gap-3 rounded-[28px] px-5 py-4 lg:hidden">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(event) => handleAnchorClick(event, item.href)}
-                className="text-sm font-medium text-[var(--muted)] hover:text-[var(--foreground)]"
+              <Link
+                href="/"
+                onClick={() => setMenuOpen(false)}
+                className="min-w-0 lg:flex-none"
               >
-                {item.label}
-              </a>
-            ))}
-          </div>
-        ) : null}
-      </header>
-
-      <main className="mx-auto flex w-[min(1180px,calc(100%-1.5rem))] flex-col gap-24 pb-20 pt-10 sm:gap-28 sm:pt-14">
-        <section
-          id="home"
-          className="relative section-anchor section-grid noise-overlay overflow-hidden rounded-[28px] px-4 py-8 sm:rounded-[40px] sm:px-10 sm:py-14"
-        >
-          <div className="absolute left-0 top-0 h-64 w-64 rounded-full bg-[var(--primary-soft)] blur-3xl" />
-          <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[color:rgba(97,245,196,0.16)] blur-3xl" />
-
-          <div className="relative grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
-            <div className="min-w-0 space-y-6 sm:space-y-8">
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: "easeOut" }}
-                className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium"
-              >
-                <Sparkles className="h-4 w-4 text-[var(--primary)]" />
-                Software Engineering Student
-              </motion.div>
-
-              <div className="space-y-4">
-                <motion.h1
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.05 }}
-                  className="max-w-4xl font-[family-name:var(--font-display)] text-4xl font-bold tracking-tight sm:text-6xl"
-                >
+                <span className="block truncate font-[family-name:var(--font-display)] text-xs font-bold uppercase tracking-[0.08em] text-white sm:text-sm lg:text-base">
                   Muhammad Sahil
-                </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.12 }}
-                  className="max-w-2xl text-lg leading-8 text-[var(--muted)]"
-                >
-                  Web Developer and Mobile App Developer.
-                </motion.p>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.18 }}
-                className="flex flex-wrap gap-3 sm:gap-4"
-              >
-                <a
-                  href="#projects"
-                  onClick={(event) => handleAnchorClick(event, "#projects")}
-                  className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] px-5 py-3 text-sm font-semibold text-[var(--background)]"
-                >
-                  View Projects
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
-                  href="#contact"
-                  onClick={(event) => handleAnchorClick(event, "#contact")}
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-3 text-sm font-semibold"
-                >
-                  Contact Me
-                </a>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.22 }}
-                className="grid gap-4 sm:grid-cols-3"
-              >
-                {heroStats.map((item) => (
-                  <div key={item.label} className="glass-panel rounded-[24px] p-5">
-                    <p className="font-[family-name:var(--font-display)] text-2xl font-bold">
-                      {item.value}
-                    </p>
-                    <p className="mt-2 text-sm text-[var(--muted)]">{item.label}</p>
-                  </div>
-                ))}
-              </motion.div>
+                </span>
+              </Link>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.12 }}
-              className="glass-panel relative min-w-0 rounded-[28px] p-4 sm:rounded-[36px] sm:p-6"
+            <nav className="glass-pill absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 px-2 py-2 lg:flex">
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={(event) => handleAnchorClick(event, item.href)}
+                  className="rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white/70 transition hover:bg-white/10 hover:text-white xl:px-5 xl:text-sm"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+
+            <a
+              href="#contact"
+              onClick={(event) => handleAnchorClick(event, "#contact")}
+              className="glass-pill inline-flex shrink-0 items-center gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-white lg:hidden"
             >
-              <div className="absolute inset-4 rounded-[22px] border border-white/10 sm:inset-6 sm:rounded-[28px]" />
-              <div className="relative overflow-hidden rounded-[22px] bg-[linear-gradient(135deg,rgba(255,148,84,0.16),transparent_38%),linear-gradient(315deg,rgba(97,245,196,0.18),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))] p-4 sm:rounded-[28px] sm:p-6">
-                <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">Profile Image</p>
-                <p className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold">
-                  Muhammad Sahil
-                </p>
+              Contact
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-black">
+                <ArrowRight className="h-3.5 w-3.5 -rotate-45" />
+              </span>
+            </a>
 
-                <div className="mt-8 overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface)]">
-                  <div className="relative aspect-[4/5] w-full sm:aspect-[3/4] lg:aspect-[4/5]">
-                    <Image
-                      src="/myimage.jpg"
-                      alt="Muhammad Sahil profile photo"
-                      fill
-                      priority
-                      sizes="(max-width: 639px) 100vw, (max-width: 1023px) 60vw, 36vw"
-                      className="object-cover object-top"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-6 rounded-[20px] border border-[var(--border)] p-4 sm:rounded-[24px] sm:p-5">
-                  <div className="flex min-w-0 items-center gap-3 text-sm">
-                    <Mail className="h-4 w-4 text-[var(--primary)]" />
-                    <span className="min-w-0 break-all text-xs sm:text-sm">
-                      maliksahil10996@gmail.com
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+            <a
+              href="#contact"
+              onClick={(event) => handleAnchorClick(event, "#contact")}
+              className="glass-pill hidden shrink-0 items-center gap-3 px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white lg:flex lg:px-5 lg:py-3 lg:text-sm"
+            >
+              Contact Us
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-black">
+                <ArrowRight className="h-4 w-4 -rotate-45" />
+              </span>
+            </a>
           </div>
-        </section>
 
+          <AnimatePresence>
+            {menuOpen ? (
+              <>
+                <motion.button
+                  type="button"
+                  aria-label="Close navigation menu"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setMenuOpen(false)}
+                  className="fixed inset-0 z-40 bg-black/45 backdrop-blur-[2px] lg:hidden"
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="glass-panel absolute left-0 right-0 top-[calc(100%+0.65rem)] z-50 p-4 sm:p-5 lg:hidden"
+                >
+                  <div className="mb-4 flex items-center justify-between">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">
+                      Navigation
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setMenuOpen(false)}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80"
+                      aria-label="Close menu"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <nav className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {navItems.map((item, index) => (
+                      <motion.a
+                        key={item.href}
+                        href={item.href}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.04 + index * 0.04, duration: 0.35 }}
+                        onClick={(event) => handleAnchorClick(event, item.href)}
+                        className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-center text-xs font-semibold uppercase tracking-[0.12em] text-white/80 transition hover:border-white/20 hover:bg-white/10 hover:text-white sm:px-4 sm:py-3.5 sm:text-sm"
+                      >
+                        {item.label}
+                      </motion.a>
+                    ))}
+                  </nav>
+
+                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                    <a
+                      href="/sahil-cv.pdf"
+                      download
+                      onClick={() => setMenuOpen(false)}
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-semibold text-black"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download CV
+                    </a>
+                    <a
+                      href="#contact"
+                      onClick={(event) => handleAnchorClick(event, "#contact")}
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-white"
+                    >
+                      Contact Us
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  </div>
+                </motion.div>
+              </>
+            ) : null}
+          </AnimatePresence>
+        </div>
+      </header>
+
+      {/* ── Full-width Hero ── */}
+      <section
+        id="home"
+        className="section-anchor relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-4 pb-24 pt-32 text-center sm:pb-32 sm:pt-40"
+      >
+        {/* Background video — crossfade loop */}
+        <video
+          ref={videoA}
+          src={VIDEO_SRC}
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: 1 }}
+        />
+        <video
+          ref={videoB}
+          src={VIDEO_SRC}
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ opacity: 0 }}
+        />
+        {/* Dark overlay — strong enough for white text to pop */}
+        <div className="absolute inset-0 bg-black/55" />
+        {/* Full bottom vignette */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black/80 to-transparent" />
+        {/* Subtle color accents */}
+        <div className="absolute left-0 top-0 h-96 w-96 rounded-full bg-[var(--primary-soft)] blur-[120px] opacity-60" />
+        <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[color:rgba(97,245,196,0.12)] blur-[120px]" />
+
+        {/* Content */}
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 sm:gap-8">
+
+          {/* Pill badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 16, filter: "blur(12px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm"
+          >
+            Web · Mobile · Software Engineering
+          </motion.div>
+
+          {/* Headline — word-by-word progressive blur reveal */}
+          <BlurRevealText
+            text="Building Things. Solving Problems."
+            className="font-[family-name:var(--font-display)] text-4xl font-bold leading-[1.12] tracking-tight text-white sm:text-6xl lg:text-7xl"
+            delay={0.3}
+          />
+
+          {/* Sub-headline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.9, ease: "easeOut", delay: 0.85 }}
+            className="max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8"
+          >
+            I design and develop clean web interfaces and mobile apps fast, accessible, and built to last.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 1.05 }}
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+          >
+            <a
+              href="#projects"
+              onClick={(event) => handleAnchorClick(event, "#projects")}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-transform hover:scale-[1.03]"
+            >
+              View Projects
+              <ArrowRight className="h-5 w-5" />
+            </a>
+            <a
+              href="#contact"
+              onClick={(event) => handleAnchorClick(event, "#contact")}
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-transform hover:scale-[1.03]"
+            >
+              Contact Me
+            </a>
+          </motion.div>
+
+          {/* Stats row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 1.2 }}
+            className="mt-2 flex flex-wrap items-center justify-center gap-6 sm:gap-12"
+          >
+            {heroStats.map((item) => (
+              <div key={item.label} className="text-center">
+                <p className="font-[family-name:var(--font-display)] text-2xl font-bold text-white sm:text-3xl">
+                  {item.value}
+                </p>
+                <p className="mt-1 text-xs text-white/55 sm:text-sm">{item.label}</p>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, duration: 0.6 }}
+          className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1"
+        >
+          <span className="text-xs uppercase tracking-[0.22em] text-white/40">Scroll to explore</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ChevronDown className="h-5 w-5 text-white/40" />
+          </motion.div>
+        </motion.div>
+
+        {/* Social icon strip — bottom-right, covers watermark area */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.8, duration: 0.5 }}
+          className="absolute bottom-0 right-0 z-10 flex items-center gap-px overflow-hidden rounded-tl-[28px] border-l border-t border-white/10 bg-white/10 px-1.5 py-1.5 shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-3xl saturate-150"
+        >
+          {heroSocialActions.map((action) => (
+            <a
+              key={action.label}
+              href={action.href}
+              target={action.href.startsWith("http") ? "_blank" : undefined}
+              rel={action.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              aria-label={action.label}
+              onClick={
+                action.href.startsWith("#")
+                  ? (event) => handleAnchorClick(event, action.href)
+                  : undefined
+              }
+              className="group flex h-14 w-14 items-center justify-center rounded-2xl text-white/55 transition-all duration-200 hover:bg-white/12 hover:text-white sm:h-16 sm:w-16"
+            >
+              {action.kind === "simple" && action.icon ? (
+                <BrandIcon icon={action.icon} />
+              ) : action.kind === "linkedin" ? (
+                <LinkedInIcon />
+              ) : (
+                <Mail className="h-6 w-6 stroke-[1.7]" />
+              )}
+            </a>
+          ))}
+        </motion.div>
+      </section>
+
+      <main className="mx-auto flex w-[min(1180px,calc(100%-1.5rem))] flex-col gap-24 pb-0 pt-10 sm:gap-28 sm:pt-14">
         <section id="about" data-reveal className="section-anchor grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="space-y-6">
             <SectionHeading
@@ -322,27 +596,31 @@ export function PortfolioShell() {
               title="Software Engineering student focused on practical development."
               description="I build clean websites and app interfaces with a focus on responsiveness, usability, and simple design."
             />
-            <div className="glass-panel rounded-[28px] p-6">
-              <p className="text-sm uppercase tracking-[0.25em] text-[var(--muted)]">Education</p>
-              <p className="mt-3 font-[family-name:var(--font-display)] text-2xl font-semibold">
-                BS Software Engineering
-              </p>
-              <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
-                Studying software architecture, UI engineering, problem solving, and practical
-                product development.
-              </p>
-            </div>
+            <Reveal delay={0.08}>
+              <div className="glass-panel p-6">
+                <p className="text-sm uppercase tracking-[0.25em] text-[var(--muted)]">Education</p>
+                <p className="mt-3 font-[family-name:var(--font-display)] text-2xl font-semibold">
+                  BS Software Engineering
+                </p>
+                <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
+                  Studying software architecture, UI engineering, problem solving, and practical
+                  product development.
+                </p>
+              </div>
+            </Reveal>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            {highlights.map((item, index) => (
+            {highlightCards.map((card, index) => {
+              const Icon = card.icon;
+              return (
               <motion.div
-                key={item}
+                key={card.title}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.35 }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
-                className={`card-panel flex min-h-[220px] flex-col justify-between rounded-[28px] p-6 ${
+                className={`card-panel flex min-h-[200px] flex-col justify-between p-5 sm:min-h-[220px] sm:p-6 ${
                   index === 0 ? "md:col-span-2" : ""
                 }`}
               >
@@ -350,20 +628,19 @@ export function PortfolioShell() {
                   <p className="text-sm uppercase tracking-[0.25em] text-[var(--muted)]">
                     0{index + 1}
                   </p>
-                  <div className="h-10 w-10 rounded-full bg-[var(--primary-soft)]" />
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 bg-[var(--primary-soft)] text-[var(--primary)]">
+                    <Icon className="h-5 w-5" strokeWidth={1.8} />
+                  </div>
                 </div>
                 <div className="space-y-4">
                   <p className="font-[family-name:var(--font-display)] text-xl font-semibold leading-8">
-                    {index === 0
-                      ? "Frontend development"
-                      : index === 1
-                        ? "Web and mobile projects"
-                        : "Problem solving mindset"}
+                    {card.title}
                   </p>
-                  <p className="max-w-[28ch] text-base leading-7 text-[var(--muted)]">{item}</p>
+                  <p className="max-w-[28ch] text-base leading-7 text-[var(--muted)]">{card.description}</p>
                 </div>
               </motion.div>
-            ))}
+            );
+            })}
           </div>
         </section>
 
@@ -373,9 +650,16 @@ export function PortfolioShell() {
             title="Skills and tools I use."
             description="A mix of frontend, backend, and app development skills."
           />
-          <div className="grid gap-6 lg:grid-cols-3">
-            {skillCategories.map((category) => (
-              <div key={category.title} className="card-panel rounded-[30px] p-6">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
+            {skillCategories.map((category, index) => (
+              <motion.div
+                key={category.title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ duration: 0.55, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="card-panel p-5 sm:p-6"
+              >
                 <h3 className="font-[family-name:var(--font-display)] text-2xl font-semibold">
                   {category.title}
                 </h3>
@@ -399,7 +683,7 @@ export function PortfolioShell() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
@@ -410,9 +694,11 @@ export function PortfolioShell() {
             title="Technologies I work with."
             description="Hover the logos to pause the animation."
           />
-          <div className="glass-panel rounded-[34px] p-6 sm:p-8">
-            <TechMarquee items={techLogos} />
-          </div>
+          <Reveal delay={0.1}>
+            <div className="glass-panel marquee-shell px-3 py-4 sm:px-5 sm:py-5">
+              <TechMarquee items={techLogos} />
+            </div>
+          </Reveal>
         </section>
 
         <section id="projects" data-reveal className="section-anchor space-y-10">
@@ -421,43 +707,96 @@ export function PortfolioShell() {
             title="Selected projects."
             description="A few web and app projects I have worked on."
           />
-          <ProjectGrid projects={projects} />
-        </section>
-
-        <section id="contact" data-reveal className="section-anchor space-y-10">
-          <SectionHeading
-            eyebrow="Contact"
-            title="Get in touch."
-            description="Feel free to contact me for projects, internships, or collaboration."
-          />
-          <ContactForm />
+          <Reveal delay={0.06}>
+            <ProjectGrid projects={projects} />
+          </Reveal>
         </section>
       </main>
 
-      <footer className="mx-auto mb-8 w-[min(1180px,calc(100%-1.5rem))]">
-        <div className="glass-panel flex flex-col gap-4 rounded-[28px] px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-[family-name:var(--font-display)] text-lg font-semibold">
-              Muhammad Sahil
-            </p>
-            <p className="text-sm text-[var(--muted)]">
-              Software Engineering Student | Web and Mobile App Developer
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-4 text-sm">
-            <a href="mailto:maliksahil10996@gmail.com" className="hover:text-[var(--primary)]">
-              maliksahil10996@gmail.com
-            </a>
-            <a
-              href="#home"
-              onClick={(event) => handleAnchorClick(event, "#home")}
-              className="hover:text-[var(--primary)]"
-            >
-              Back to top
-            </a>
-          </div>
+      <VideoBackdrop className="mt-0">
+        <div className="mx-auto flex w-[min(1180px,calc(100%-1.5rem))] flex-col gap-10 pb-14 pt-16 sm:gap-12 sm:pb-16 sm:pt-20">
+          <section id="contact" data-reveal className="section-anchor space-y-8 sm:space-y-10">
+            <SectionHeading
+              eyebrow="Contact"
+              title="Get in touch."
+              description="Feel free to contact me for projects, internships, or collaboration."
+              inverted
+            />
+            <Reveal delay={0.12}>
+              <ContactForm />
+            </Reveal>
+          </section>
+
+          <Reveal delay={0.08}>
+            <footer className="relative">
+              <div className="glass-panel flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <div>
+                <p className="font-[family-name:var(--font-display)] text-lg font-semibold text-white">
+                  Muhammad Sahil
+                </p>
+                <p className="text-sm text-white/65">
+                  Software Engineering Student | Web and Mobile App Developer
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-4 text-sm text-white/75">
+                <a href="mailto:maliksahil10996@gmail.com" className="hover:text-white">
+                  maliksahil10996@gmail.com
+                </a>
+                <a
+                  href="#home"
+                  onClick={(event) => handleAnchorClick(event, "#home")}
+                  className="hover:text-white"
+                >
+                  Back to top
+                </a>
+              </div>
+              </div>
+            </footer>
+          </Reveal>
         </div>
-      </footer>
+      </VideoBackdrop>
     </div>
+  );
+}
+
+// ── Progressive Blur Reveal ──────────────────────────────────────────────────
+// Splits text into words and animates each one from blurred+faded to clear,
+// staggered so they reveal left-to-right in a smooth wave.
+
+interface BlurRevealTextProps {
+  text: string;
+  className?: string;
+  delay?: number;       // initial delay before the wave starts (seconds)
+  stagger?: number;     // gap between each word (seconds)
+  duration?: number;    // per-word animation duration (seconds)
+}
+
+function BlurRevealText({
+  text,
+  className = "",
+  delay = 0,
+  stagger = 0.08,
+  duration = 0.65,
+}: BlurRevealTextProps) {
+  const words = text.split(" ");
+  return (
+    <h1 className={className} aria-label={text}>
+      {words.map((word, i) => (
+        <motion.span
+          key={`${word}-${i}`}
+          initial={{ opacity: 0, filter: "blur(16px)", y: 12 }}
+          animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+          transition={{
+            duration,
+            delay: delay + i * stagger,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="inline-block"
+          style={{ marginRight: "0.28em" }}
+        >
+          {word}
+        </motion.span>
+      ))}
+    </h1>
   );
 }
