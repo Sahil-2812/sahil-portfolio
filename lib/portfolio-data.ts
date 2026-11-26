@@ -181,7 +181,6 @@ export const projects: Project[] = [
 export const socialLinks = [
   { label: "GitHub", href: siteConfig.githubProfile },
   { label: "LinkedIn", href: siteConfig.linkedIn },
-  { label: "Portfolio repo", href: siteConfig.githubPortfolio },
   { label: "Email", href: `mailto:${siteConfig.email}` },
 ];
 

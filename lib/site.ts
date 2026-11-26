@@ -22,7 +22,6 @@ export const siteConfig = {
   jobTitle: "Software Engineering Student",
   locale: "en_US",
   githubProfile: "https://github.com/Sahil-2812",
-  githubPortfolio: "https://github.com/Sahil-2812/sahil-portfolio",
   linkedIn: "https://www.linkedin.com/in/sahil2812",
   sameAs: [
     "https://github.com/Sahil-2812",
