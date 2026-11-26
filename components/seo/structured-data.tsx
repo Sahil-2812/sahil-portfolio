@@ -9,7 +9,14 @@ export function StructuredData() {
     name: siteConfig.name,
     url: siteUrl,
     email: siteConfig.email,
+    telephone: siteConfig.phone,
     jobTitle: siteConfig.jobTitle,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: siteConfig.location.locality,
+      addressRegion: siteConfig.location.region,
+      addressCountry: "PK",
+    },
     knowsAbout: [
       "Web Development",
       "Mobile App Development",
@@ -19,7 +26,7 @@ export function StructuredData() {
       "Firebase",
       "UI/UX",
     ],
-    sameAs: siteConfig.sameAs.filter((url) => !url.includes("example")),
+    sameAs: [...siteConfig.sameAs],
   };
 
   const website = {
@@ -56,7 +63,9 @@ export function StructuredData() {
         "@type": "CreativeWork",
         name: project.title,
         description: project.description,
-        url: `${siteUrl}/#project-${project.slug}`,
+        url: project.liveUrl?.startsWith("http")
+          ? project.liveUrl
+          : `${siteUrl}/#project-${project.slug}`,
         author: { "@id": `${siteUrl}/#person` },
         keywords: project.techStack.join(", "),
       },

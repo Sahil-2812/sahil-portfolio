@@ -7,7 +7,8 @@ function CrawlableSummary() {
   return (
     <div className="sr-only">
       <p>
-        {siteConfig.description} Email: {siteConfig.email}. Skills include React, Next.js,
+        {siteConfig.description} Email: {siteConfig.email}. Phone: {siteConfig.phoneDisplay}.
+        Based in {siteConfig.location.label}. Skills include React, Next.js,
         TypeScript, Node.js, Firebase, Tailwind CSS, and mobile development with Expo.
       </p>
       <ul>

@@ -179,8 +179,9 @@ export const projects: Project[] = [
 ];
 
 export const socialLinks = [
-  { label: "GitHub", href: siteConfig.sameAs[0] },
-  { label: "LinkedIn", href: siteConfig.sameAs[1] },
+  { label: "GitHub", href: siteConfig.githubProfile },
+  { label: "LinkedIn", href: siteConfig.linkedIn },
+  { label: "Portfolio repo", href: siteConfig.githubPortfolio },
   { label: "Email", href: `mailto:${siteConfig.email}` },
 ];
 

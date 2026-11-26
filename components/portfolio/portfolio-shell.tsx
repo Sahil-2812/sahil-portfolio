@@ -61,13 +61,13 @@ const CROSSFADE_DURATION = 1.5;
 const heroSocialActions = [
   {
     label: "GitHub",
-    href: siteConfig.sameAs[0],
+    href: siteConfig.githubProfile,
     icon: siGithub,
     kind: "simple",
   },
   {
     label: "LinkedIn",
-    href: siteConfig.sameAs[1],
+    href: siteConfig.linkedIn,
     icon: null,
     kind: "linkedin",
   },
@@ -804,9 +804,13 @@ export function PortfolioShell() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-white/75">
-                <a href="mailto:maliksahil10996@gmail.com" className="hover:text-white">
-                  maliksahil10996@gmail.com
+                <a href={`mailto:${siteConfig.email}`} className="hover:text-white">
+                  {siteConfig.email}
                 </a>
+                <a href={`tel:${siteConfig.phone}`} className="hover:text-white">
+                  {siteConfig.phoneDisplay}
+                </a>
+                <span className="text-white/55">{siteConfig.location.label}</span>
                 <a
                   href="#home"
                   onClick={(event) => handleAnchorClick(event, "#home")}

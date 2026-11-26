@@ -1,9 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { Mail, MapPin, Send } from "lucide-react";
+import { Mail, MapPin, Phone, Send } from "lucide-react";
 
 import { socialLinks } from "@/lib/portfolio-data";
+import { siteConfig } from "@/lib/site";
 
 const initialState = {
   name: "",
@@ -23,7 +24,7 @@ export function ContactForm() {
       `Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`,
     );
 
-    window.location.href = `mailto:maliksahil10996@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${siteConfig.email}?subject=${subject}&body=${body}`;
     setStatus("Your email app should open with the message pre-filled.");
     setForm(initialState);
   };
@@ -84,12 +85,20 @@ export function ContactForm() {
           </h3>
           <div className="mt-4 space-y-3 text-sm text-white/70">
             <p className="flex items-center gap-3">
-              <Mail className="h-4 w-4 text-[var(--primary)]" />
-              maliksahil10996@gmail.com
+              <Mail className="h-4 w-4 shrink-0 text-[var(--primary)]" />
+              <a href={`mailto:${siteConfig.email}`} className="hover:text-white">
+                {siteConfig.email}
+              </a>
             </p>
             <p className="flex items-center gap-3">
-              <MapPin className="h-4 w-4 text-[var(--primary)]" />
-              Pakistan
+              <Phone className="h-4 w-4 shrink-0 text-[var(--primary)]" />
+              <a href={`tel:${siteConfig.phone}`} className="hover:text-white">
+                {siteConfig.phoneDisplay}
+              </a>
+            </p>
+            <p className="flex items-center gap-3">
+              <MapPin className="h-4 w-4 shrink-0 text-[var(--primary)]" />
+              {siteConfig.location.label}
             </p>
           </div>
         </div>

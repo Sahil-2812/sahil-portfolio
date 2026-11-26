@@ -17,6 +17,8 @@ export const metadata: Metadata = {
     "Muhammad Sahil portfolio",
     "software engineering student",
     "web developer Pakistan",
+    "web developer Faisalabad",
+    "Faisalabad Punjab developer",
     "Next.js developer",
     "React developer portfolio",
     "full stack student projects",
