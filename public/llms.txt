@@ -1,0 +1,20 @@
+# Muhammad Sahil — Portfolio
+
+> Software engineering student portfolio: web development, mobile apps, Next.js, React, TypeScript.
+
+Canonical URL: https://sahil-portfolio-2812.netlify.app
+Sitemap: https://sahil-portfolio-2812.netlify.app/sitemap.xml
+
+## About
+
+Muhammad Sahil builds responsive websites, admin dashboards, and React Native applications using modern tools including Next.js, React, Node.js, Firebase, and MySQL/MongoDB.
+
+## Featured projects
+
+Professional: Royal Drinking Water, GoldSilver.de, Caravan Store, Real Hope Pakistan (https://realhopepakistan.com)
+
+Academic: E-Commerce Web App, Attendance Management System
+
+## Contact
+
+Email: maliksahil10996@gmail.com

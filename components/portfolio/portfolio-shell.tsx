@@ -23,6 +23,7 @@ import {
   skillCategories,
   techLogos,
 } from "@/lib/portfolio-data";
+import { siteConfig } from "@/lib/site";
 import { loadVideoSource, playWhenReady } from "@/lib/video-utils";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -60,19 +61,19 @@ const CROSSFADE_DURATION = 1.5;
 const heroSocialActions = [
   {
     label: "GitHub",
-    href: "https://github.com/example",
+    href: siteConfig.sameAs[0],
     icon: siGithub,
     kind: "simple",
   },
   {
     label: "LinkedIn",
-    href: "https://linkedin.com/in/example",
+    href: siteConfig.sameAs[1],
     icon: null,
     kind: "linkedin",
   },
   {
     label: "Email",
-    href: "mailto:maliksahil10996@gmail.com",
+    href: `mailto:${siteConfig.email}`,
     icon: null,
     kind: "mail",
   },
@@ -148,7 +149,12 @@ export function PortfolioShell() {
   }, [menuOpen]);
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => setLoading(false), 700);
+    const ua = navigator.userAgent;
+    const isLikelyCrawler = /bot|crawler|spider|google|bing|slurp|duckduck|yandex|baidu|semrush|ahref/i.test(
+      ua,
+    );
+    const delay = isLikelyCrawler ? 0 : 400;
+    const timeout = window.setTimeout(() => setLoading(false), delay);
     return () => window.clearTimeout(timeout);
   }, []);
 
@@ -494,7 +500,7 @@ export function PortfolioShell() {
           src={VIDEO_SRC}
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
           style={{ opacity: 1 }}
@@ -529,21 +535,31 @@ export function PortfolioShell() {
             Web · Mobile · Software Engineering
           </motion.div>
 
-          {/* Headline — word-by-word progressive blur reveal */}
+          {/* Primary heading — name for SEO and clarity */}
           <BlurRevealText
-            text="Building Things. Solving Problems."
+            text={siteConfig.name}
             className="font-[family-name:var(--font-display)] text-4xl font-bold leading-[1.12] tracking-tight text-white sm:text-6xl lg:text-7xl"
             delay={0.3}
           />
+
+          <motion.p
+            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.9, ease: "easeOut", delay: 0.85 }}
+            className="font-[family-name:var(--font-display)] text-2xl font-semibold leading-tight text-white/90 sm:text-3xl"
+          >
+            Building things. Solving problems.
+          </motion.p>
 
           {/* Sub-headline */}
           <motion.p
             initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.85 }}
+            transition={{ duration: 0.9, ease: "easeOut", delay: 0.95 }}
             className="max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8"
           >
-            I design and develop clean web interfaces and mobile apps fast, accessible, and built to last.
+            Software engineering student — I design and develop web interfaces and mobile apps that
+            are fast, accessible, and built to last.
           </motion.p>
 
           {/* CTAs */}
@@ -754,7 +770,7 @@ export function PortfolioShell() {
           <SectionHeading
             eyebrow="Projects"
             title="Selected projects."
-            description="A few web and app projects I have worked on."
+            description="Professional client work, academic builds, and live products—including realhopepakistan.com."
           />
           <Reveal delay={0.06}>
             <ProjectGrid projects={projects} />

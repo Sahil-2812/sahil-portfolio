@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export const alt = "Sahil Khan portfolio";
+export const alt = "Muhammad Sahil portfolio — web and mobile developer";
 export const size = {
   width: 1200,
   height: 630,
@@ -39,7 +39,7 @@ export default function Image() {
           <span>Web + Mobile Development</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ fontSize: 84, fontWeight: 700 }}>Sahil Khan</div>
+          <div style={{ fontSize: 84, fontWeight: 700 }}>Muhammad Sahil</div>
           <div style={{ fontSize: 34, lineHeight: 1.3, maxWidth: 860 }}>
             Designing fast, polished products with Next.js, React, Firebase, and mobile-first UX.
           </div>

@@ -1,4 +1,6 @@
 import type { SimpleIcon } from "simple-icons";
+
+import { siteConfig } from "@/lib/site";
 import {
   siAngular,
   siBootstrap,
@@ -30,11 +32,14 @@ export type SkillCategory = {
 
 export type Project = {
   title: string;
+  slug: string;
+  segment: "professional" | "academic";
+  employer?: string;
   category: "web" | "fullstack" | "mobile";
   description: string;
   techStack: string[];
-  liveUrl: string;
-  githubUrl: string;
+  liveUrl?: string;
+  githubUrl?: string;
   image: string;
 };
 
@@ -50,9 +55,9 @@ export const heroStats = [
 ];
 
 export const highlights = [
-  "Builds responsive websites and clean user interfaces.",
-  "Works on web and mobile app projects with modern tools.",
-  "Enjoys turning student ideas into practical products.",
+  "Builds production web apps, dashboards, and React Native clients.",
+  "Ships full-stack features with APIs, auth, and admin tooling.",
+  "Focused on clear UX, maintainable code, and real business workflows.",
 ];
 
 export const skillCategories: SkillCategory[] = [
@@ -81,7 +86,7 @@ export const skillCategories: SkillCategory[] = [
     title: "App Development",
     description: "Cross-platform thinking, smooth interaction patterns, and mobile-friendly systems.",
     skills: [
-      { label: "React Native Concepts", level: 80 },
+      { label: "React Native", level: 84 },
       { label: "Expo", level: 77 },
       { label: "Mobile UX", level: 88 },
     ],
@@ -90,61 +95,93 @@ export const skillCategories: SkillCategory[] = [
 
 export const projects: Project[] = [
   {
-    title: "E-commerce Web App",
+    title: "Royal Drinking Water Platform",
+    slug: "royal-drinking-water",
+    segment: "professional",
+    employer: "Arswift Pvt. Ltd.",
     category: "fullstack",
     description:
-      "A conversion-focused storefront with product discovery, cart management, and a clean checkout journey.",
+      "End-to-end water delivery platform for Royal Drinking Water: React Native customer app (signup, OTP, orders, wallet, payments), RoyalRider app for trips, deliveries, earnings, and cash collection, plus a Next.js admin dashboard for customers, colonies, inventory, riders, trips, expenses, and reports—wired to a Node/Express + MySQL API.",
+    techStack: [
+      "React Native",
+      "Next.js",
+      "Node.js",
+      "Express",
+      "MySQL",
+      "Redux Toolkit",
+    ],
+    liveUrl: "https://royaldrinkingwater.com",
+    image: "/projects/royal-water-preview.svg",
+  },
+  {
+    title: "GoldSilver.de",
+    slug: "goldsilver-de",
+    segment: "professional",
+    employer: "Arswift Pvt. Ltd.",
+    category: "fullstack",
+    description:
+      "German-focused precious-metals content and affiliate platform: topical landing pages, live price and Fear & Greed widgets, news and review hubs, customer accounts (saved articles, subscriptions), and an admin console for news, subscribers, content pages, affiliates, and analytics—powered by a Node/MongoDB API with scheduled content agents.",
+    techStack: ["Next.js", "React", "Node.js", "MongoDB", "Chart.js", "SEO"],
+    liveUrl: "https://www.goldsilver.de",
+    image: "/projects/goldsilver-preview.svg",
+  },
+  {
+    title: "Caravan Store",
+    slug: "caravan-store",
+    segment: "professional",
+    employer: "Client — Germany",
+    category: "fullstack",
+    description:
+      "German motorhome and caravan dealership stack: Next.js public site for buying, renting, and selling vehicles (catalog, blog, FAQ, affiliate, newsletter), customer and admin dashboards, Firebase authentication with Google sign-in, and an Express + Prisma/MySQL API with vehicle media and booking flows.",
+    techStack: [
+      "Next.js",
+      "TypeScript",
+      "Firebase",
+      "Node.js",
+      "Prisma",
+      "MySQL",
+    ],
+    liveUrl: "https://www.caravan-store.de",
+    image: "/projects/caravan-store-preview.svg",
+  },
+  {
+    title: "E-Commerce Web App",
+    slug: "ecommerce-web-app",
+    segment: "academic",
+    category: "fullstack",
+    description:
+      "Full-stack online store with product browsing, cart flow, and checkout-oriented UI — built to practice catalog management, authenticated sessions, and order data handling with a modern React stack.",
     techStack: ["Next.js", "React", "Tailwind CSS", "Firebase"],
-    liveUrl: "https://example.com/ecommerce",
-    githubUrl: "https://github.com/example/ecommerce-web-app",
     image: "/projects/ecommerce-preview.svg",
   },
   {
-    title: "College Website",
-    category: "web",
-    description:
-      "A modern academic portal with admissions, faculty highlights, event updates, and responsive information architecture.",
-    techStack: ["Next.js", "TypeScript", "GSAP", "CSS"],
-    liveUrl: "https://example.com/college",
-    githubUrl: "https://github.com/example/college-website",
-    image: "/projects/college-preview.svg",
-  },
-  {
-    title: "Class Website",
-    category: "web",
-    description:
-      "A collaborative hub for class announcements, schedules, assignments, and shared student resources.",
-    techStack: ["React", "Tailwind CSS", "Framer Motion"],
-    liveUrl: "https://example.com/class",
-    githubUrl: "https://github.com/example/class-website",
-    image: "/projects/class-preview.svg",
-  },
-  {
-    title: "Library Management System",
+    title: "Attendance Management System",
+    slug: "attendance-management-system",
+    segment: "academic",
     category: "fullstack",
     description:
-      "A practical admin interface for catalog browsing, issue tracking, member records, and status analytics.",
-    techStack: ["Next.js", "Node.js", "MongoDB", "Express"],
-    liveUrl: "https://example.com/library",
-    githubUrl: "https://github.com/example/library-management-system",
-    image: "/projects/library-preview.svg",
+      "Employee attendance application with daily check-in tracking, admin dashboard views, attendance history, and reporting workflows — integrated with a backend API for roles, records, and management actions.",
+    techStack: ["Next.js", "React", "Node.js", "MySQL", "Tailwind CSS"],
+    image: "/projects/attendance-preview.svg",
   },
   {
-    title: "Notes Sharing App",
-    category: "mobile",
+    title: "Real Hope Pakistan",
+    slug: "real-hope-pakistan",
+    segment: "professional",
+    employer: "Real Hope Ministries Pakistan",
+    category: "web",
     description:
-      "A student-first notes platform designed for upload, search, and quick access across subjects and devices.",
-    techStack: ["React Native", "Firebase", "Expo"],
-    liveUrl: "https://example.com/notes-app",
-    githubUrl: "https://github.com/example/notes-sharing-app",
-    image: "/projects/notes-preview.svg",
+      "Humanitarian outreach website for Real Hope Pakistan: ministry and project pages (clean water, food, freedom from slavery, widows, orphans, and more), donation tiers, impact metrics, field stories, and contact details for Faisalabad HQ.",
+    techStack: ["Next.js", "React", "Tailwind CSS", "Responsive UI"],
+    liveUrl: "https://realhopepakistan.com",
+    image: "/projects/real-hope-preview.svg",
   },
 ];
 
 export const socialLinks = [
-  { label: "GitHub", href: "https://github.com/example" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/example" },
-  { label: "Email", href: "mailto:maliksahil10996@gmail.com" },
+  { label: "GitHub", href: siteConfig.sameAs[0] },
+  { label: "LinkedIn", href: siteConfig.sameAs[1] },
+  { label: "Email", href: `mailto:${siteConfig.email}` },
 ];
 
 export const techLogos: TechLogo[] = [
