@@ -613,7 +613,7 @@ export function PortfolioShell() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.6, duration: 0.6 }}
-          className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1"
+          className="absolute bottom-8 left-1/2 z-[1] hidden -translate-x-1/2 flex-col items-center gap-1 sm:flex"
         >
           <span className="text-xs uppercase tracking-[0.22em] text-white/40">Scroll to explore</span>
           <motion.div
@@ -629,7 +629,7 @@ export function PortfolioShell() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.8, duration: 0.5 }}
-          className="absolute bottom-0 right-0 z-10 flex items-center gap-px overflow-hidden rounded-tl-[28px] border-l border-t border-white/10 bg-white/10 px-1.5 py-1.5 shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-3xl saturate-150"
+          className="absolute bottom-0 right-0 z-20 flex items-center gap-px overflow-hidden rounded-tl-[28px] border-l border-t border-white/10 bg-[rgba(5,8,22,0.72)] px-1.5 py-1.5 shadow-[0_-10px_30px_rgba(0,0,0,0.28)] backdrop-blur-3xl saturate-150 sm:bg-white/10"
         >
           {heroSocialActions.map((action) => (
             <a
