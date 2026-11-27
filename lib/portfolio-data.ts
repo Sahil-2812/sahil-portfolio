@@ -56,6 +56,89 @@ export type Testimonial = {
   company?: string;
 };
 
+export type Service = {
+  id: string;
+  title: string;
+  description: string;
+  includes: string[];
+  icon: "globe" | "smartphone" | "server" | "dashboard" | "seo" | "design";
+};
+
+export const services: Service[] = [
+  {
+    id: "web",
+    title: "Web Development",
+    description:
+      "Marketing sites, product pages, and web apps with responsive layouts and fast Next.js delivery.",
+    includes: [
+      "Next.js & React interfaces",
+      "Responsive UI with Tailwind CSS",
+      "Auth-ready pages and forms",
+    ],
+    icon: "globe",
+  },
+  {
+    id: "mobile",
+    title: "Mobile Applications",
+    description:
+      "Customer and field-team apps with clear flows for onboarding, dashboards, and offline-friendly UX.",
+    includes: [
+      "React Native builds (Android focus)",
+      "API-driven screens & caching",
+      "App store–ready structure",
+    ],
+    icon: "smartphone",
+  },
+  {
+    id: "fullstack",
+    title: "Full-Stack & APIs",
+    description:
+      "End-to-end features connecting frontends to secure backends, databases, and third-party services.",
+    includes: [
+      "Node.js / Express REST APIs",
+      "MySQL, MongoDB & Firebase",
+      "Payments, OTP, and role-based access",
+    ],
+    icon: "server",
+  },
+  {
+    id: "admin",
+    title: "Admin Dashboards",
+    description:
+      "Operations panels for orders, users, inventory, reports, and live activity—built for daily admin use.",
+    includes: [
+      "Data tables, filters & exports",
+      "Charts and KPI summaries",
+      "Redux / server-state integration",
+    ],
+    icon: "dashboard",
+  },
+  {
+    id: "seo",
+    title: "SEO & Performance",
+    description:
+      "Search-friendly portfolios and product sites with metadata, sitemaps, and Core Web Vitals in mind.",
+    includes: [
+      "Metadata, schema & sitemaps",
+      "Canonical URLs & Open Graph",
+      "Image and bundle optimization",
+    ],
+    icon: "seo",
+  },
+  {
+    id: "ui",
+    title: "UI Implementation",
+    description:
+      "Turning briefs and mockups into polished, accessible screens with motion and glass-style systems.",
+    includes: [
+      "Component-based design systems",
+      "Framer Motion & micro-interactions",
+      "Dark/light layout consistency",
+    ],
+    icon: "design",
+  },
+];
+
 export const testimonialStats = [
   { value: "98%", label: "Client satisfaction" },
   { value: "12+", label: "Projects" },

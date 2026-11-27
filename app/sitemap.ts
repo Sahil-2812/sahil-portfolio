@@ -3,7 +3,15 @@ import type { MetadataRoute } from "next";
 import { projects } from "@/lib/portfolio-data";
 import { siteUrl } from "@/lib/site";
 
-const sectionAnchors = ["about", "skills", "stack", "projects", "testimonials", "contact"] as const;
+const sectionAnchors = [
+  "about",
+  "skills",
+  "services",
+  "stack",
+  "projects",
+  "testimonials",
+  "contact",
+] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();

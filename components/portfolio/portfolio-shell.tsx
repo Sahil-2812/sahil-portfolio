@@ -11,6 +11,7 @@ import { siGithub, siWhatsapp } from "simple-icons";
 
 import { ContactForm } from "@/components/portfolio/contact-form";
 import { ProjectGrid } from "@/components/portfolio/project-grid";
+import { Services } from "@/components/portfolio/services";
 import { Testimonials } from "@/components/portfolio/testimonials";
 import { Reveal } from "@/components/portfolio/reveal";
 import { ScrollProgress } from "@/components/portfolio/scroll-progress";
@@ -21,6 +22,7 @@ import {
   heroStats,
   highlights,
   projects,
+  services,
   skillCategories,
   techLogos,
   testimonials,
@@ -753,6 +755,17 @@ export function PortfolioShell() {
               </motion.div>
             ))}
           </div>
+        </section>
+
+        <section id="services" data-reveal className="section-anchor space-y-10">
+          <SectionHeading
+            eyebrow="Services"
+            title="What I can build for you."
+            description="Freelance and internship-friendly delivery across web, mobile, dashboards, and backend work."
+          />
+          <Reveal delay={0.06}>
+            <Services items={services} onContact={(event) => handleAnchorClick(event, "#contact")} />
+          </Reveal>
         </section>
 
         <section id="stack" data-reveal className="section-anchor space-y-10">
