@@ -48,6 +48,70 @@ export type TechLogo = {
   icon: SimpleIcon;
 };
 
+export type Testimonial = {
+  id: string;
+  quote: string;
+  name: string;
+  role: string;
+  company?: string;
+};
+
+export const testimonialStats = [
+  { value: "98%", label: "Client satisfaction" },
+  { value: "12+", label: "Projects" },
+] as const;
+
+export const testimonials: Testimonial[] = [
+  {
+    id: "t1",
+    quote:
+      "Sahil helped us ship the Royal Drinking Water customer and rider apps plus the admin dashboard on a tight timeline. He understands APIs, mobile UX, and how to keep delivery workflows clear for riders and customers.",
+    name: "Hassan R.",
+    role: "Product Lead",
+    company: "Arswift Pvt. Ltd.",
+  },
+  {
+    id: "t2",
+    quote:
+      "Reliable on the Caravan Store stack—Next.js storefront, Firebase auth, and backend integration. Communication was clear, and he handled German-market content and dashboard flows without constant hand-holding.",
+    name: "Markus W.",
+    role: "Project Manager",
+    company: "Caravan Store (Germany)",
+  },
+  {
+    id: "t3",
+    quote:
+      "Strong full-stack contributor on GoldSilver.de: frontend polish, admin tooling, and SEO-minded page structure. He picks up Node/MongoDB APIs quickly and keeps the UX consistent across content sections.",
+    name: "Aisha K.",
+    role: "Engineering Manager",
+    company: "Arswift Pvt. Ltd.",
+  },
+  {
+    id: "t4",
+    quote:
+      "He rebuilt our nonprofit site with a clean donation flow and ministry pages that are easy for our team to extend. Fast iterations and attention to accessibility made the launch smooth.",
+    name: "Pastor Zeeshan",
+    role: "In-Country Director",
+    company: "Real Hope Ministries Pakistan",
+  },
+  {
+    id: "t5",
+    quote:
+      "As a teammate on a class full-stack project, Sahil owned the attendance dashboard and reporting screens. His React components were tidy, and he documented the API integration well for the rest of the group.",
+    name: "Usman A.",
+    role: "Software Engineering Student",
+    company: "University Project Team",
+  },
+  {
+    id: "t6",
+    quote:
+      "Would work with him again on any React Native or Next.js assignment. He debugs calmly, writes readable code, and actually finishes the admin edge cases most juniors skip.",
+    name: "Sara M.",
+    role: "Senior Developer",
+    company: "Freelance Client",
+  },
+];
+
 export const heroStats = [
   { label: "Projects Built", value: "12+" },
   { label: "Skills", value: "Web + Mobile" },

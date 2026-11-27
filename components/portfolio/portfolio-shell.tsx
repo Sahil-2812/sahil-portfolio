@@ -11,6 +11,7 @@ import { siGithub, siWhatsapp } from "simple-icons";
 
 import { ContactForm } from "@/components/portfolio/contact-form";
 import { ProjectGrid } from "@/components/portfolio/project-grid";
+import { Testimonials } from "@/components/portfolio/testimonials";
 import { Reveal } from "@/components/portfolio/reveal";
 import { ScrollProgress } from "@/components/portfolio/scroll-progress";
 import { SectionHeading } from "@/components/portfolio/section-heading";
@@ -22,6 +23,7 @@ import {
   projects,
   skillCategories,
   techLogos,
+  testimonials,
 } from "@/lib/portfolio-data";
 import { siteConfig } from "@/lib/site";
 import { loadVideoSource, playWhenReady } from "@/lib/video-utils";
@@ -774,6 +776,12 @@ export function PortfolioShell() {
           />
           <Reveal delay={0.06}>
             <ProjectGrid projects={projects} />
+          </Reveal>
+        </section>
+
+        <section id="testimonials" data-reveal className="section-anchor space-y-10">
+          <Reveal delay={0.08}>
+            <Testimonials items={testimonials} />
           </Reveal>
         </section>
       </main>
