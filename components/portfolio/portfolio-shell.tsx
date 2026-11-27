@@ -536,7 +536,7 @@ export function PortfolioShell() {
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
             className="glass-pill inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/80"
           >
-            Web · Mobile · Software Engineering
+            Web · Mobile · Software Engineer
           </motion.div>
 
           {/* Primary heading — name for SEO and clarity */}
@@ -562,7 +562,7 @@ export function PortfolioShell() {
             transition={{ duration: 0.9, ease: "easeOut", delay: 0.95 }}
             className="max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8"
           >
-            Software engineering student — I design and develop web interfaces and mobile apps that
+            Software Engineer — I design and develop web interfaces and mobile apps that
             are fast, accessible, and built to last.
           </motion.p>
 
@@ -662,7 +662,7 @@ export function PortfolioShell() {
           <div className="space-y-6">
             <SectionHeading
               eyebrow="About Me"
-              title="Software Engineering student focused on practical development."
+              title="Software Engineer focused on practical development."
               description="I build clean websites and app interfaces with a focus on responsiveness, usability, and simple design."
             />
             <Reveal delay={0.08}>
@@ -821,7 +821,7 @@ export function PortfolioShell() {
                   Muhammad Sahil
                 </p>
                 <p className="text-sm text-white/65">
-                  Software Engineering Student | Web and Mobile App Developer
+                  Software Engineer | Web and Mobile App Developer
                 </p>
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-white/75">

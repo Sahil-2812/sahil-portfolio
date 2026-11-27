@@ -1,6 +1,6 @@
 # Muhammad Sahil — Portfolio
 
-> Software engineering student portfolio: web development, mobile apps, Next.js, React, TypeScript.
+> Software Engineer portfolio: web development, mobile apps, Next.js, React, TypeScript.
 
 Canonical URL: https://sahil-portfolio-2812.netlify.app
 Sitemap: https://sahil-portfolio-2812.netlify.app/sitemap.xml

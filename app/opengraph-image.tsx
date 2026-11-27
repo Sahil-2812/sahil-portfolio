@@ -34,7 +34,7 @@ export default function Image() {
             opacity: 0.9,
           }}
         >
-          <span>Software Engineering Student</span>
+          <span>Software Engineer</span>
           <span>Web + Mobile Development</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

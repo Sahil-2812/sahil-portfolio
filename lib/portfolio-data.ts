@@ -182,7 +182,7 @@ export const testimonials: Testimonial[] = [
     quote:
       "As a teammate on a class full-stack project, Sahil owned the attendance dashboard and reporting screens. His React components were tidy, and he documented the API integration well for the rest of the group.",
     name: "Usman A.",
-    role: "Software Engineering Student",
+    role: "Software Engineer",
     company: "University Project Team",
   },
   {
@@ -198,7 +198,7 @@ export const testimonials: Testimonial[] = [
 export const heroStats = [
   { label: "Projects Built", value: "12+" },
   { label: "Skills", value: "Web + Mobile" },
-  { label: "Education", value: "Software Engineering" },
+  { label: "Education", value: "Software Engineer" },
 ];
 
 export const highlights = [

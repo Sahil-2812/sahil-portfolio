@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   keywords: [
     siteConfig.name,
     "Muhammad Sahil portfolio",
-    "software engineering student",
+    "software Engineer",
     "web developer Pakistan",
     "web developer Faisalabad",
     "Faisalabad Punjab developer",
