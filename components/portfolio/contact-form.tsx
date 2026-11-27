@@ -114,7 +114,7 @@ export function ContactForm() {
                 href={link.href}
                 target={link.href.startsWith("mailto:") ? undefined : "_blank"}
                 rel={link.href.startsWith("mailto:") ? undefined : "noreferrer"}
-                className="rounded-full border border-white/12 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-white/75 hover:border-white/25 hover:text-white sm:text-sm"
+                className="link-pill px-3.5 py-1.5 text-xs font-semibold text-white/75 sm:text-sm"
               >
                 {link.label}
               </a>

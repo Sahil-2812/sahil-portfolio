@@ -64,7 +64,7 @@ function ProjectCard({ project }: { project: Project }) {
       style={{
         transform: `perspective(1000px) rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) scale(${tilt.scale})`,
       }}
-      className="group glass-panel flex flex-col transition-[transform,box-shadow] duration-200 ease-out hover:shadow-[0_20px_50px_rgba(0,0,0,0.28)]"
+      className="group glass-panel no-lift flex flex-col transition-[transform,box-shadow] duration-200 ease-out hover:border-white/25 hover:bg-white/[0.085] hover:shadow-[0_22px_52px_rgba(0,0,0,0.32)]"
     >
       <div className="relative aspect-[16/9] overflow-hidden">
         <Image
@@ -180,10 +180,10 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
               key={filter.value}
               type="button"
               onClick={() => setActiveFilter(filter.value)}
-              className={`rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] sm:text-sm ${
+              className={`filter-pill px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] sm:text-sm ${
                 active
-                  ? "border-white/20 bg-white/12 text-white"
-                  : "border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:text-white"
+                  ? "is-active border-white/20 bg-white/12 text-white"
+                  : "text-white/60 hover:text-white"
               }`}
             >
               {filter.label}

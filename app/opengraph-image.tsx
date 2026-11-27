@@ -21,8 +21,7 @@ export default function Image() {
           justifyContent: "space-between",
           padding: "54px",
           color: "#f4efe6",
-          background:
-            "radial-gradient(circle at top right, rgba(255,148,84,0.25), transparent 30%), radial-gradient(circle at bottom left, rgba(97,245,196,0.25), transparent 30%), linear-gradient(135deg, #050816 0%, #0d1430 50%, #08101f 100%)",
+          background: "#050816",
           fontFamily: "Arial, sans-serif",
         }}
       >

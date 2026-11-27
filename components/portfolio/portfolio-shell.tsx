@@ -431,7 +431,7 @@ export function PortfolioShell() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.98 }}
                   transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                  className="glass-panel absolute left-0 right-0 top-[calc(100%+0.65rem)] z-50 p-4 sm:p-5 lg:hidden"
+                  className="glass-panel no-lift absolute left-0 right-0 top-[calc(100%+0.65rem)] z-50 p-4 sm:p-5 lg:hidden"
                 >
                   <div className="mb-4 flex items-center justify-between">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/55">
@@ -519,8 +519,8 @@ export function PortfolioShell() {
         {/* Full bottom vignette */}
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black/80 to-transparent" />
         {/* Subtle color accents */}
-        <div className="absolute left-0 top-0 h-96 w-96 rounded-full bg-[var(--primary-soft)] blur-[120px] opacity-60" />
-        <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[color:rgba(97,245,196,0.12)] blur-[120px]" />
+        <div className="absolute left-0 top-0 h-96 w-96 rounded-full bg-white/[0.04] blur-[120px]" />
+        <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-white/[0.03] blur-[120px]" />
 
         {/* Content */}
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 sm:gap-8">
@@ -530,7 +530,7 @@ export function PortfolioShell() {
             initial={{ opacity: 0, y: 16, filter: "blur(12px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm"
+            className="glass-pill inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/80"
           >
             Web · Mobile · Software Engineering
           </motion.div>
@@ -693,7 +693,7 @@ export function PortfolioShell() {
                   <p className="text-sm uppercase tracking-[0.25em] text-[var(--muted)]">
                     0{index + 1}
                   </p>
-                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--primary)]/20 bg-[var(--primary-soft)] text-[var(--primary)]">
+                  <div className="link-pill inline-flex h-10 w-10 items-center justify-center border-white/15 bg-white/8 p-0 text-white/85">
                     <Icon className="h-5 w-5" strokeWidth={1.8} />
                   </div>
                 </div>
@@ -742,7 +742,7 @@ export function PortfolioShell() {
                           whileInView={{ width: `${skill.level}%` }}
                           viewport={{ once: true, amount: 0.6 }}
                           transition={{ duration: 0.8, ease: "easeOut" }}
-                          className="h-full rounded-full brand-gradient"
+                          className="h-full rounded-full accent-fill"
                         />
                       </div>
                     </div>
@@ -760,7 +760,7 @@ export function PortfolioShell() {
             description="Hover the logos to pause the animation."
           />
           <Reveal delay={0.1}>
-            <div className="glass-panel marquee-shell px-3 py-4 sm:px-5 sm:py-5">
+            <div className="glass-panel no-lift marquee-shell px-3 py-4 sm:px-5 sm:py-5">
               <TechMarquee items={techLogos} />
             </div>
           </Reveal>

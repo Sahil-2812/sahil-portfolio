@@ -25,7 +25,7 @@ export function ScrollProgress() {
   return (
     <div className="fixed inset-x-0 top-0 z-50 h-1 bg-transparent">
       <div
-        className="h-full rounded-full brand-gradient"
+        className="h-full rounded-full accent-fill"
         style={{ width: `${progress}%` }}
       />
     </div>
